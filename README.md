@@ -6,6 +6,6 @@ Technické parametre:
 
     Programovanie v jazyku Python a C#.
     Programovanie vo VScode IDE.
-    Práca v softvére Unity a Blender.
+    Práca v softvére Unity.
     Použité python knižnice: Stablebaseline3, ML-agents, Pytorch, Gymnasium
 
