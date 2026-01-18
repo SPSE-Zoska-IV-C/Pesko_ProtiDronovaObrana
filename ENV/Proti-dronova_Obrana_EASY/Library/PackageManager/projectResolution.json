@@ -59,13 +59,13 @@
       "source": "registry",
       "testable": false
     },
-    "com.unity.ml-agents@2.0.1": {
+    "com.unity.ml-agents@2.0.2": {
       "name": "com.unity.ml-agents",
       "displayName": "ML Agents",
-      "resolvedPath": "D:\\Documents\\My_projects\\Unity\\Pesko_ProtiDronovaObrana\\ENV\\Proti-dronova_Obrana_EASY\\Library\\PackageCache\\com.unity.ml-agents@c99f42d6809e",
-      "fingerprint": "c99f42d6809e80c57ee6e44e5ff285a8bbe71999",
+      "resolvedPath": "D:\\Documents\\My_projects\\Unity\\Pesko_ProtiDronovaObrana\\ENV\\Proti-dronova_Obrana_EASY\\Library\\PackageCache\\com.unity.ml-agents@b5c6c30d646c",
+      "fingerprint": "b5c6c30d646cd7614d7ddae3712f208cf0d3b516",
       "editorCompatibility": "2019.4.0a1",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "source": "registry",
       "testable": false
     },

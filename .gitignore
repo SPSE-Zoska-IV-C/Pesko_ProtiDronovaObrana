@@ -126,3 +126,6 @@ ENV/Proti-dronova_Obrana_MEDIUM/.vscode/*
 ENV/Proti-dronova_Obrana_MEDIUM/Proti-dronova_Obrana/Assets/TutorialInfo/*
 ENV/Proti-dronova_Obrana_MEDIUM/Proti-dronova_Obrana/Library/APIUpdater/ConfigurationCache/*
 ENV/Proti-dronova_Obrana_MEDIUM/Library/APIUpdater/ConfigurationCache/*
+ENV/Proti-dronova_Obrana_EASY/Temp/*
+ENV/Proti-dronova_Obrana_HARD/Temp/*
+ENV/Proti-dronova_Obrana_MEDIUM/Temp/*

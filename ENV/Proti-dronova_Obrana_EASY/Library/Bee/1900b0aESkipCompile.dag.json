@@ -29,7 +29,7 @@
       "DisplayName": "Writing 6097564273297756792.rsp",
       "ActionType": "WriteFile",
       "PayloadOffset": 83,
-      "PayloadLength": 11288,
+      "PayloadLength": 14110,
       "PayloadDebugContentSnippet": "-a=\"D:\\Documents\\My_projects\\U",
       "Inputs": [],
       "InputFlags": [],
@@ -108,10 +108,10 @@
         "Library/PackageCache/com.unity.collections@d49facba0036/Unity.Collections.Tests/System.IO.Hashing/System.IO.Hashing.dll",
         "Library/PackageCache/com.unity.collections@d49facba0036/Unity.Collections.Tests/System.Runtime.CompilerServices.Unsafe/System.Runtime.CompilerServices.Unsafe.dll",
         "Library/PackageCache/com.unity.ext.nunit@031a54704bff/net40/unity-custom/nunit.framework.dll",
-        "Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Plugins/ProtoBuffer/Grpc.Core.dll",
-        "Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Plugins/ProtoBuffer/System.Interactive.Async.dll",
-        "Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Plugins/System.IO.Abstractions.dll",
-        "Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Plugins/System.IO.Abstractions.TestingHelpers.dll",
+        "Library/PackageCache/com.unity.ml-agents@b5c6c30d646c/Plugins/ProtoBuffer/Grpc.Core.dll",
+        "Library/PackageCache/com.unity.ml-agents@b5c6c30d646c/Plugins/ProtoBuffer/System.Interactive.Async.dll",
+        "Library/PackageCache/com.unity.ml-agents@b5c6c30d646c/Plugins/System.IO.Abstractions.dll",
+        "Library/PackageCache/com.unity.ml-agents@b5c6c30d646c/Plugins/System.IO.Abstractions.TestingHelpers.dll",
         "Library/PackageCache/com.unity.nuget.mono-cecil@d78732e851eb/Mono.Cecil.dll",
         "Library/PackageCache/com.unity.nuget.mono-cecil@d78732e851eb/Mono.Cecil.Mdb.dll",
         "Library/PackageCache/com.unity.nuget.mono-cecil@d78732e851eb/Mono.Cecil.Pdb.dll",
@@ -372,16 +372,16 @@
       "File": "Library/PackageCache/com.unity.ext.nunit@031a54704bff/net40/unity-custom/nunit.framework.dll"
     },
     {
-      "File": "Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Plugins/ProtoBuffer/Grpc.Core.dll"
+      "File": "Library/PackageCache/com.unity.ml-agents@b5c6c30d646c/Plugins/ProtoBuffer/Grpc.Core.dll"
     },
     {
-      "File": "Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Plugins/ProtoBuffer/System.Interactive.Async.dll"
+      "File": "Library/PackageCache/com.unity.ml-agents@b5c6c30d646c/Plugins/ProtoBuffer/System.Interactive.Async.dll"
     },
     {
-      "File": "Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Plugins/System.IO.Abstractions.dll"
+      "File": "Library/PackageCache/com.unity.ml-agents@b5c6c30d646c/Plugins/System.IO.Abstractions.dll"
     },
     {
-      "File": "Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Plugins/System.IO.Abstractions.TestingHelpers.dll"
+      "File": "Library/PackageCache/com.unity.ml-agents@b5c6c30d646c/Plugins/System.IO.Abstractions.TestingHelpers.dll"
     },
     {
       "File": "Library/PackageCache/com.unity.nuget.mono-cecil@d78732e851eb/Mono.Cecil.dll"
@@ -586,6 +586,6 @@
   "SharedResources": [],
   "Scanners": [],
   "Identifier": "Library/Bee/1900b0aESkipCompile.dag.json",
-  "PayloadsFile": "D:/Documents/My_projects/Unity/Proti-dronova_Obrana/Library/Bee/1900b0aESkipCompile.dag.payloads",
+  "PayloadsFile": "D:/Documents/My_projects/Unity/Pesko_ProtiDronovaObrana/ENV/Proti-dronova_Obrana_EASY/Library/Bee/1900b0aESkipCompile.dag.payloads",
   "RelativePathToRoot": "../.."
 }

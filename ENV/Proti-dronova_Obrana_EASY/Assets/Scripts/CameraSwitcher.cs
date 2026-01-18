@@ -5,9 +5,9 @@ public class CameraSwitcher : MonoBehaviour
 {
     [Header("Camera References")]
     [SerializeField] private Camera worldCam;
-    [SerializeField] private Camera[] envCameras = new Camera[25]; // 25 environment cameras
+    [SerializeField] private Camera turretCam;
 
-    private int currentCamIndex = -1; // -1 = world cam, 0-24 = env cams
+    private bool isWorldCamActive = true;
     private Keyboard keyboard;
 
     private void Start()
@@ -18,9 +18,15 @@ public class CameraSwitcher : MonoBehaviour
             return;
         }
 
+        if (!turretCam)
+        {
+            Debug.LogError("CameraSwitcher: Turret camera not assigned!");
+            return;
+        }
+
         // Start with world camera
-        SetActiveCamera(-1);
-        Debug.Log("CameraSwitcher started. Press C to cycle cameras, or number keys 0-9 for direct access.");
+        SetWorldCamera();
+        Debug.Log("CameraSwitcher started. Press C to toggle WorldCam/TurretCam.");
     }
 
     private void Update()
@@ -31,96 +37,51 @@ public class CameraSwitcher : MonoBehaviour
             return;
         }
 
-        // C key cycles through all cameras
+        // C key toggles between WorldCam and TurretCam
         if (keyboard.cKey.wasPressedThisFrame)
         {
-            CycleCameras();
+            ToggleCamera();
         }
-
-        // Number keys for direct camera access
-        // 0 = world cam, 1-9 = env cameras 1-9
-        if (keyboard.digit0Key.wasPressedThisFrame) SetActiveCamera(-1);
-        if (keyboard.digit1Key.wasPressedThisFrame) SetActiveCamera(0);
-        if (keyboard.digit2Key.wasPressedThisFrame) SetActiveCamera(1);
-        if (keyboard.digit3Key.wasPressedThisFrame) SetActiveCamera(2);
-        if (keyboard.digit4Key.wasPressedThisFrame) SetActiveCamera(3);
-        if (keyboard.digit5Key.wasPressedThisFrame) SetActiveCamera(4);
-        if (keyboard.digit6Key.wasPressedThisFrame) SetActiveCamera(5);
-        if (keyboard.digit7Key.wasPressedThisFrame) SetActiveCamera(6);
-        if (keyboard.digit8Key.wasPressedThisFrame) SetActiveCamera(7);
-        if (keyboard.digit9Key.wasPressedThisFrame) SetActiveCamera(8);
-
-        // Arrow keys for prev/next
-        if (keyboard.rightArrowKey.wasPressedThisFrame) NextCamera();
-        if (keyboard.leftArrowKey.wasPressedThisFrame) PreviousCamera();
     }
 
-    private void CycleCameras()
+    private void ToggleCamera()
     {
-        currentCamIndex++;
-
-        // Wrap around: -1 (world) -> 0-24 (envs) -> back to -1
-        if (currentCamIndex >= envCameras.Length)
+        if (isWorldCamActive)
         {
-            currentCamIndex = -1;
+            SetTurretCamera();
         }
-
-        SetActiveCamera(currentCamIndex);
-    }
-
-    private void NextCamera()
-    {
-        currentCamIndex++;
-        if (currentCamIndex >= envCameras.Length) currentCamIndex = -1;
-        SetActiveCamera(currentCamIndex);
-    }
-
-    private void PreviousCamera()
-    {
-        currentCamIndex--;
-        if (currentCamIndex < -1) currentCamIndex = envCameras.Length - 1;
-        SetActiveCamera(currentCamIndex);
-    }
-
-    private void SetActiveCamera(int index)
-    {
-        currentCamIndex = index;
-
-        // Disable all cameras first
-        DisableAllCameras();
-
-        // Enable the selected camera
-        if (index == -1)
+        else
         {
-            // World camera
-            worldCam.enabled = true;
-            EnableAudioListener(worldCam);
-            Debug.Log("Switched to: World Camera");
-        }
-        else if (index >= 0 && index < envCameras.Length && envCameras[index] != null)
-        {
-            // Environment camera
-            envCameras[index].enabled = true;
-            EnableAudioListener(envCameras[index]);
-            Debug.Log($"Switched to: Environment Camera {index + 1}");
+            SetWorldCamera();
         }
     }
 
-    private void DisableAllCameras()
+    private void SetWorldCamera()
+    {
+        // Disable turret cam
+        turretCam.enabled = false;
+        DisableAudioListener(turretCam);
+
+        // Enable world cam
+        worldCam.enabled = true;
+        EnableAudioListener(worldCam);
+
+        isWorldCamActive = true;
+        Debug.Log("Switched to: World Camera");
+    }
+
+    private void SetTurretCamera()
     {
         // Disable world cam
         worldCam.enabled = false;
         DisableAudioListener(worldCam);
 
-        // Disable all env cams
-        for (int i = 0; i < envCameras.Length; i++)
-        {
-            if (envCameras[i] != null)
-            {
-                envCameras[i].enabled = false;
-                DisableAudioListener(envCameras[i]);
-            }
-        }
+        // Enable turret cam
+        turretCam.enabled = true;
+        EnableAudioListener(turretCam);
+
+        isWorldCamActive = false;
+        Debug.Log("Switched to: Turret Camera");
     }
 
     private void EnableAudioListener(Camera cam)

@@ -24,6 +24,17 @@ public class TurretAgentML : Agent
     public float fireRate = 8f;
     public float projectileLifetime = 5f;
 
+    [Header("Rewards - Strict but Encouraging")]
+    public float hitReward = 5.0f;
+    public float wallHitPenalty = -1.0f;
+
+    public float goodShotReward = 0.10f;     // aimAccuracy > 0.995
+    public float decentShotReward = 0.03f;   // aimAccuracy > 0.985
+    public float badShotPenalty = -0.02f;    // otherwise
+
+    public float aimingRewardPerStep = 0.0003f; // small dense help early
+
+
     [Header("Debug")]
     public bool showBarrelAim = true;
     public float aimLineLength = 50f;
@@ -55,8 +66,6 @@ public class TurretAgentML : Agent
     private void OnDrawGizmos()
     {
         if (!showBarrelAim || !bulletSpawnPoint) return;
-
-        // RED RAY: Shows where barrel is aiming
         Gizmos.color = Color.red;
         Gizmos.DrawRay(bulletSpawnPoint.position, bulletSpawnPoint.forward * aimLineLength);
         Gizmos.DrawWireSphere(bulletSpawnPoint.position, 0.3f);
@@ -64,7 +73,6 @@ public class TurretAgentML : Agent
 
     private void Update()
     {
-        // Update aim accuracy in Inspector for monitoring
         if (targetDrone && bulletSpawnPoint)
         {
             Vector3 toDrone = (targetDrone.transform.position - bulletSpawnPoint.position).normalized;
@@ -81,33 +89,31 @@ public class TurretAgentML : Agent
         sensor.AddObservation(NormAngle(e.y));
         sensor.AddObservation(NormAngle(barrelPivot?.localEulerAngles.x ?? 0f));
         sensor.AddObservation(NormAngle(e.z));
+
         Vector3 p = transform.position;
         sensor.AddObservation(p / 100f);
 
         if (targetDrone)
         {
-            Vector3 rel = turretBase ? turretBase.InverseTransformPoint(targetDrone.transform.position) : targetDrone.transform.position - p;
+            Vector3 rel = turretBase ? turretBase.InverseTransformPoint(targetDrone.transform.position)
+                                     : targetDrone.transform.position - p;
             sensor.AddObservation(rel / 100f);
+
             Vector3 v = droneController?.Velocity ?? Vector3.zero;
             sensor.AddObservation(v / 20f);
+
             sensor.AddObservation(Mathf.Clamp01(Vector3.Distance(p, targetDrone.transform.position) / 200f));
+
             bool inFront = turretBase && Vector3.Dot(turretBase.forward, (targetDrone.transform.position - p).normalized) > 0.3f;
             sensor.AddObservation(inFront ? 1f : 0f);
 
             if (!inFront) AddReward(-0.3f / MaxStep);
 
-            // REWARD: Agent gets rewarded when barrel faces drone
             if (bulletSpawnPoint && turretBase)
             {
                 Vector3 toDrone = (targetDrone.transform.position - bulletSpawnPoint.position).normalized;
-                Vector3 barrelForward = bulletSpawnPoint.forward;
-                float aimAccuracy = Vector3.Dot(barrelForward, toDrone);
-
-                // Continuous reward based on how well barrel is aimed
-                AddReward(Mathf.Max(0, aimAccuracy) * 0.002f);
-
-                if (aimAccuracy > 0.996f) AddReward(0.01f / MaxStep);  // Within ~5°
-                if (aimAccuracy > 0.999f) AddReward(0.02f / MaxStep);  // Within ~2°
+                float aimAccuracy = Vector3.Dot(bulletSpawnPoint.forward, toDrone);
+                AddReward(Mathf.Max(0, aimAccuracy) * aimingRewardPerStep);
             }
         }
         else
@@ -123,7 +129,9 @@ public class TurretAgentML : Agent
         float pitch = Mathf.Clamp(ca[1], -1f, 1f);
         float shoot = ca[2];
 
-        if (turretBase) turretBase.Rotate(Vector3.up, yaw * baseTurnSpeed * Time.deltaTime, Space.Self);
+        if (turretBase)
+            turretBase.Rotate(Vector3.up, yaw * baseTurnSpeed * Time.deltaTime, Space.Self);
+
         if (barrelPivot)
         {
             currentPitch = Mathf.Clamp(currentPitch + pitch * barrelTurnSpeed * Time.deltaTime, minPitch, maxPitch);
@@ -134,7 +142,21 @@ public class TurretAgentML : Agent
         {
             FireProjectile();
             nextShotTime = Time.time + 1f / fireRate;
-            AddReward(-0.05f);
+
+            if (bulletSpawnPoint && targetDrone)
+            {
+                Vector3 toDrone = (targetDrone.transform.position - bulletSpawnPoint.position).normalized;
+                float aimAccuracy = Vector3.Dot(bulletSpawnPoint.forward, toDrone);
+
+                if (aimAccuracy > 0.997f) AddReward(goodShotReward);
+                else if (aimAccuracy > 0.99f) AddReward(decentShotReward);
+                else if (aimAccuracy > 0.95f) AddReward(0.05f);
+                else AddReward(badShotPenalty);
+            }
+            else
+            {
+                AddReward(badShotPenalty);
+            }
         }
     }
 
@@ -153,25 +175,39 @@ public class TurretAgentML : Agent
     private void FireProjectile()
     {
         if (!projectilePrefab || !bulletSpawnPoint) return;
+
         var bullet = Instantiate(projectilePrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+
         var rb = bullet.GetComponent<Rigidbody>();
-        if (!rb) { Destroy(bullet); return; }
+        if (!rb)
+        {
+            Destroy(bullet);
+            return;
+        }
 
         var mlb = bullet.GetComponent<MLBullet>();
         if (!mlb) mlb = bullet.AddComponent<MLBullet>();
-        mlb.Setup(this);
+
+        // IMPORTANT: this line now works (Setup(this) exists), and also ignores turret collisions.
+        mlb.Setup(this, this.transform);
 
         rb.linearVelocity = bulletSpawnPoint.forward * muzzleSpeed;
         rb.angularVelocity = Vector3.zero;
         rb.useGravity = false;
+
         Destroy(bullet, projectileLifetime);
     }
 
     public void RegisterSuccessfulHit()
     {
-        AddReward(10f);
+        AddReward(hitReward);
         droneController?.ResetDronePosition();
         if (statsUI != null) statsUI.TriggerHitFlash();
+    }
+
+    public void RegisterWallHit()
+    {
+        AddReward(wallHitPenalty);
     }
 
     private float NormAngle(float deg)
