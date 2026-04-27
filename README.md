@@ -20,8 +20,8 @@ Technické parametre:
 
 ### 1. Klonovanie repozitára
 ```bash
-git clone https://github.com/username/anti-drone-rl.git
-cd anti-drone-rl
+git clone https://github.com/SPSE-Zoska-IV-C/Pesko_ProtiDronovaObrana.git
+cd Pesko_ProtiDronovaObrana
 ```
 
 ### 2. Inštalácia Python závislostí
